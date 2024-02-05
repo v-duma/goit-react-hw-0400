@@ -1,4 +1,3 @@
-// App.jsx
 import { useState } from "react";
 import SearchBar from "./SearchBar/SearchBar";
 import ImageGallery from "./ImageGallery/ImageGallery";
@@ -13,7 +12,7 @@ const App = () => {
 
   return (
     <div className="appDiv">
-      <SearchBar onSearch={handleSearch} />
+      <SearchBar key="searchBar" onSearch={handleSearch} />
       <div className="ImageList">
         <ImageGallery images={images} />
       </div>

@@ -10,14 +10,13 @@ const SearchBar = ({ onSearch }) => {
   const [error, setError] = useState(null);
   const [images, setImages] = useState([]);
   const [loading, setLoading] = useState(false);
-  const [showLoader, setShowLoader] = useState(false);
   const [page, setPage] = useState(1);
   const [uniqueIds, setUniqueIds] = useState([]);
 
-  const handleSearch = async () => {
+  const handleSearch = async (e) => {
+    e.preventDefault();
     try {
       setLoading(true);
-      setShowLoader(true);
       const response = await axios.get(
         "https://api.unsplash.com/search/photos",
         {
@@ -36,47 +35,39 @@ const SearchBar = ({ onSearch }) => {
 
       onSearch(newImages);
 
-      setTimeout(() => {
-        setImages((prevImages) => [...prevImages, ...newImages]);
-        setUniqueIds((prevIds) => [
-          ...prevIds,
-          ...newImages.map((image) => image.id),
-        ]);
-        setLoading(false);
-        setShowLoader(false);
-      }, 1000);
+      setImages((prevImages) => [...prevImages, ...newImages]);
+      setUniqueIds((prevIds) => [
+        ...prevIds,
+        ...newImages.map((image) => image.id),
+      ]);
+      setLoading(false);
+      setPage((prevPage) => prevPage + 1);
     } catch (error) {
       console.error("Error fetching images:", error);
       setError("Error fetching images. Please try again.");
       setLoading(false);
-      setShowLoader(false);
     }
   };
 
-  const loadMore = () => {
-    setPage((prevPage) => prevPage + 1);
-    handleSearch();
-  };
-
   useEffect(() => {
-    setShowLoader(true);
-  }, [showLoader]);
+    setLoading(false);
+  }, [images]);
 
   return (
     <>
-      <div className={css.header}>
-        <input
-          type="text"
-          value={query}
-          onChange={(e) => setQuery(e.target.value)}
-          placeholder="Enter search keyword"
-        />
-        <button onClick={handleSearch}>Search</button>
-      </div>
+      <form className={css.form} onSubmit={handleSearch}>
+        <label>
+          <input
+            type="text"
+            value={query}
+            onChange={(e) => setQuery(e.target.value)}
+            placeholder="Enter search keyword"
+          />
+        </label>
+        <button type="submit">Search</button>
+      </form>
       <ImageGallery images={images} loading={loading} />
-      {images.length > 0 && !loading && showLoader && (
-        <LoadMoreBtn onClick={loadMore} />
-      )}
+      {images.length > 0 && !loading && <LoadMoreBtn onClick={handleSearch} />}
 
       {error && <ErrorMessage message={error} />}
     </>

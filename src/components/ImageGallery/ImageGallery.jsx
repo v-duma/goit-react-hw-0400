@@ -18,17 +18,18 @@ const ImageGallery = ({ images, loading }) => {
 
   return (
     <>
-      <div>
+      <ul>
         {images.map((image) => (
-          <img
-            key={image.id}
-            src={image.urls.small}
-            alt={image.alt_description}
-            onClick={() => openModal(image)}
-          />
+          <li key={image.id}>
+            <img
+              src={image.urls.small}
+              alt={image.alt_description}
+              onClick={() => openModal(image)}
+            />
+          </li>
         ))}
-      </div>
-      {loading && <Loader />} {/* Display loader only during loading state */}
+      </ul>
+      {loading && <Loader />}
       <ImageModal
         isOpen={modalIsOpen}
         onRequestClose={closeModal}
