@@ -9,6 +9,7 @@ const searchGalleryApi = axios.create({
 });
 
 export const getGalleryData = async (value, page) => {
+  // eslint-disable-next-line no-useless-catch
   try {
     const response = await searchGalleryApi.get("/search/photos", {
       params: {
