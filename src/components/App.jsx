@@ -1,11 +1,10 @@
 import { useState, useEffect } from "react";
-import Searchbar from "./Searchbar/Searchbar";
 import ImageGallery from "./ImageGallery/ImageGallery";
 import Button from "./Button/Button";
 import Loader from "./Loader/Loader";
 import Modal from "./Modal/Modal";
 import { getGalleryData } from "./service/api";
-
+import Searchbar from "./Searchbar/Searchbar";
 export const App = () => {
   const [searchQuery, setSearchQuery] = useState("");
   const [images, setImages] = useState([]);
