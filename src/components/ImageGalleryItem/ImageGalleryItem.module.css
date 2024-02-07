@@ -1,0 +1,10 @@
+.galleryItem {
+  display: block;
+  width: 400px;
+  height: 300px;
+}
+
+.galleryItemImage {
+  width: 320px;
+  height: 220px;
+}

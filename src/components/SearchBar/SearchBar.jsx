@@ -1,77 +1,38 @@
-import { useState, useEffect } from "react";
-import axios from "axios";
-import { ErrorMessage } from "../ErrorMessage/ErrorMessage";
-import ImageGallery from "../ImageGallery/ImageGallery";
-import LoadMoreBtn from "../LoadMoreBtn/LoadMoreBtn";
-import css from "./SearchBar.module.css";
+import { useState } from "react";
+import styles from "./Searchbar.module.css";
+import PropTypes from "prop-types";
 
-const SearchBar = ({ onSearch }) => {
+const Searchbar = ({ onSubmit }) => {
   const [query, setQuery] = useState("");
-  const [error, setError] = useState(null);
-  const [images, setImages] = useState([]);
-  const [loading, setLoading] = useState(false);
-  const [page, setPage] = useState(1);
-  const [uniqueIds, setUniqueIds] = useState([]);
 
-  const handleSearch = async (e) => {
-    e.preventDefault();
-    try {
-      setLoading(true);
-      const response = await axios.get(
-        "https://api.unsplash.com/search/photos",
-        {
-          params: {
-            query,
-            per_page: 9,
-            client_id: "Ejbl26wSYPCwsZwT3as0PQ1cCitRW6ZYKYw8BWd_Luk",
-            page,
-          },
-        }
-      );
-
-      const newImages = response.data.results.filter(
-        (image) => !uniqueIds.includes(image.id)
-      );
-
-      onSearch(newImages);
-
-      setImages((prevImages) => [...prevImages, ...newImages]);
-      setUniqueIds((prevIds) => [
-        ...prevIds,
-        ...newImages.map((image) => image.id),
-      ]);
-      setLoading(false);
-      setPage((prevPage) => prevPage + 1);
-    } catch (error) {
-      console.error("Error fetching images:", error);
-      setError("Error fetching images. Please try again.");
-      setLoading(false);
-    }
+  const handleChange = (event) => {
+    setQuery(event.target.value);
   };
-
-  useEffect(() => {
-    setLoading(false);
-  }, [images]);
-
+  const handleSubmit = (event) => {
+    event.preventDefault();
+    onSubmit(query);
+  };
   return (
-    <>
-      <form className={css.form} onSubmit={handleSearch}>
-        <label>
-          <input
-            type="text"
-            value={query}
-            onChange={(e) => setQuery(e.target.value)}
-            placeholder="Enter search keyword"
-          />
-        </label>
-        <button type="submit">Search</button>
-      </form>
-      <ImageGallery images={images} loading={loading} />
-      {images.length > 0 && !loading && <LoadMoreBtn onClick={handleSearch} />}
+    <header className={styles.Searchbar}>
+      <form className={styles.SearchForm} onSubmit={handleSubmit}>
+        <button type="submit" className={styles.SearchFormBtn}>
+          <span className={styles.SearchFormButtonLabel}>Search</span>
+        </button>
 
-      {error && <ErrorMessage message={error} />}
-    </>
+        <input
+          className={styles.SearchFormInput}
+          type="text"
+          autoComplete="off"
+          autoFocus
+          placeholder="Search images and photos"
+          value={query}
+          onChange={handleChange}
+        />
+      </form>
+    </header>
   );
 };
-
-export default SearchBar;
+export default Searchbar;
+Searchbar.propTypes = {
+  onSubmit: PropTypes.func.isRequired,
+};
